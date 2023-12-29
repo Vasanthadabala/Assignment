@@ -9,9 +9,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.example.assignment.screens.ItemDetailsScreen
 import com.example.assignment.screens.ItemsListScreen
 
+@ExperimentalGlideComposeApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
