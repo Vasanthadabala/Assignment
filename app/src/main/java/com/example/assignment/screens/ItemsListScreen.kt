@@ -1,10 +1,14 @@
 package com.example.assignment.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,11 +29,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.assignment.R
 import com.example.assignment.data.ListViewModel
 import com.example.assignment.data.roomdb.ListEntity
 import com.example.assignment.navigations.ItemDetails
@@ -51,16 +58,37 @@ fun ItemListScreenComponent(navController: NavHostController){
     val viewModel: ListViewModel = viewModel()
     val listItems = viewModel.getListOrderdByTitle().observeAsState(emptyList()).value
 
-    Column(modifier = Modifier.background(Color(0XFFE6EDf5))) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0XFFE6EDf5)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            if (listItems.isEmpty()) {
+                Image(
+                    painter = painterResource(id = R.drawable.corrupted),
+                    contentDescription = null,
+                    modifier = Modifier.size(120.dp)
+                )
+            }
+
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-        ){
-            items(listItems){ item ->
-                MenuDish(item = item, navController = navController, viewModel = viewModel )
+        ) {
+                items(listItems) { item ->
+                    MenuDish(item = item, navController = navController, viewModel = viewModel)
+                }
             }
-        }
         FloatingActionButton(
             onClick = { navController.navigate(ItemDetails.route + "/0") },
             modifier = Modifier
@@ -135,7 +163,8 @@ fun MenuDish(item: ListEntity, navController: NavHostController, viewModel: List
                     imageVector = Icons.Rounded.Delete,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(5.dp).align(Alignment.Bottom)
+                        .padding(5.dp)
+                        .align(Alignment.Bottom)
                         .clickable {
                             viewModel.deleteItem(item.id)
                         }

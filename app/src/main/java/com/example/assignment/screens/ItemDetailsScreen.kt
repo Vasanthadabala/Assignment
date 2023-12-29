@@ -8,7 +8,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,6 +59,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -69,7 +69,6 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.assignment.data.ListViewModel
@@ -126,12 +125,20 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         quantity = selectedItem?.quantity ?: 0
         rating = selectedItem?.rating ?: 0.0
         remarks = TextFieldValue(selectedItem?.remarks ?: "")
-        capturedImageUris = listOf(Uri.parse(selectedItem?.images as? String?:""))
+        capturedImageUris = if(selectedItem?.images !=null) {
+            selectedItem?.images?.map { Uri.parse(it) }!!
+        }else{
+            emptyList()
+        }
     }
 
     val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            capturedImageUris = capturedImageUris + listOf(uri)
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { result ->
+            if (result) {
+                if (!capturedImageUris.contains(uri)) {
+                    capturedImageUris = capturedImageUris + listOf(uri)
+                }
+            }
         }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -194,11 +201,6 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                 modifier = Modifier.padding(10.dp).width(300.dp)
             ) {
                 items(capturedImageUris) { imageUri ->
-//                    Image(
-//                        modifier = Modifier.size(120.dp),
-//                        painter = rememberImagePainter(imageUri),
-//                        contentDescription = null
-//                    )
                     GlideImage(
                         model = imageUri,
                         contentDescription = "Image",
@@ -263,7 +265,10 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                     .fillMaxWidth()
                     .padding(start = 30.dp, bottom = 10.dp, end = 10.dp, top = 10.dp),
                 shape = RoundedCornerShape(18),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Number
+                ),
                 keyboardActions = KeyboardActions(
                     onDone = { keyboardController?.hide() }
                 ),
