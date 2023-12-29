@@ -19,16 +19,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarHalf
 import androidx.compose.material.icons.rounded.StarOutline
@@ -37,6 +42,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -53,8 +59,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +71,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -103,12 +113,10 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
+
     val file = context.createImageFile()
-    val uri = FileProvider.getUriForFile(
-        context,
-        "${context.packageName}.provider",
-        file
-    )
+    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+
     val viewModel: ListViewModel = viewModel()
 
     val selectedItem by viewModel.getItemById(id).observeAsState()
@@ -133,13 +141,12 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
     }
 
     val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { result ->
-            if (result) {
-                if (!capturedImageUris.contains(uri)) {
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+                if (it && !capturedImageUris.contains(uri)) {
                     capturedImageUris = capturedImageUris + listOf(uri)
                 }
-            }
         }
+
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -172,8 +179,7 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                         color = Color.Black,
                         shape = RoundedCornerShape(10.dp)
                     )
-                    .height(120.dp)
-                    .width(110.dp)
+                    .size(120.dp)
                     .clickable {
                         val permissionCheckResult =
                             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
@@ -198,14 +204,47 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
             }
 
             LazyRow(
-                modifier = Modifier.padding(10.dp).width(300.dp)
+                modifier = Modifier
+                    .padding(5.dp)
+                    .width(300.dp)
             ) {
                 items(capturedImageUris) { imageUri ->
-                    GlideImage(
-                        model = imageUri,
-                        contentDescription = "Image",
-                        modifier = Modifier.size(120.dp)
-                    )
+                    val iconSize = 24.dp
+                    val offsetInPx =
+                        LocalDensity.current.run { ((iconSize - 5.dp) / 2).roundToPx() }
+                    Box(
+                        modifier = Modifier
+                            .padding(iconSize / 2)
+                    ) {
+                        Card {
+                            GlideImage(
+                                model = imageUri,
+                                contentDescription = "Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(110.dp)
+                                    .clip(RoundedCornerShape(5.dp))
+                            )
+                        }
+                        IconButton(
+                            onClick = { capturedImageUris = capturedImageUris - listOf(imageUri) },
+                            modifier = Modifier
+                                .offset {
+                                    IntOffset(x = +offsetInPx, y = -offsetInPx)
+                                }
+                                .clip(CircleShape)
+                                .background(Color(0xFFEA4141))
+                                .size(iconSize)
+                                .align(Alignment.TopEnd)
+                        ) {
+                            Icon(
+                                modifier = Modifier.padding(3.dp),
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = "close",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
             }
         }

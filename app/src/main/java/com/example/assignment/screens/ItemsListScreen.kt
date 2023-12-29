@@ -60,35 +60,34 @@ fun ItemListScreenComponent(navController: NavHostController){
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .background(Color(0XFFE6EDf5)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            if (listItems.isEmpty()) {
-                Image(
-                    painter = painterResource(id = R.drawable.corrupted),
-                    contentDescription = null,
-                    modifier = Modifier.size(120.dp)
-                )
-            }
-
-        }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
+        if(listItems.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
                 items(listItems) { item ->
                     MenuDish(item = item, navController = navController, viewModel = viewModel)
                 }
             }
+        }else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                if (listItems.isEmpty()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.corrupted),
+                        contentDescription = null,
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
+            }
+        }
         FloatingActionButton(
             onClick = { navController.navigate(ItemDetails.route + "/0") },
             modifier = Modifier
