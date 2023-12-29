@@ -114,12 +114,11 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
 
     val selectedItem by viewModel.getItemById(id).observeAsState()
 
-    var name by remember { mutableStateOf(TextFieldValue(selectedItem?.name ?: "")) }
-    var quantity by remember { mutableIntStateOf(selectedItem?.quantity ?: 0) }
-    var rating by remember { mutableDoubleStateOf(selectedItem?.rating ?: 0.0) }
-    var remarks by remember { mutableStateOf(TextFieldValue(selectedItem?.remarks ?: "")) }
+    var name by remember { mutableStateOf(TextFieldValue("")) }
+    var quantity by remember { mutableIntStateOf(0) }
+    var rating by remember { mutableDoubleStateOf(0.0) }
+    var remarks by remember { mutableStateOf(TextFieldValue("")) }
     var capturedImageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
-    //    var capturedImageUri by remember { mutableStateOf<Uri>(Uri.EMPTY) }
 
 
     LaunchedEffect(selectedItem){
@@ -132,7 +131,6 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
 
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-//            capturedImageUri = uri
             capturedImageUris = capturedImageUris + listOf(uri)
         }
 
@@ -209,14 +207,6 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                 }
             }
         }
-//        if (capturedImageUri.path?.isNotEmpty() == true) {
-//            Image(
-//                modifier = Modifier
-//                    .padding(16.dp, 8.dp),
-//                painter = rememberImagePainter(capturedImageUri),
-//                contentDescription = null
-//            )
-//        }
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -370,7 +360,12 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                                 capturedImageUris
                             )
                         }
-                        navController.navigate(ItemList.route)
+                        navController.navigate(ItemList.route){
+                            popUpTo(ItemList.route){
+                                inclusive = true
+                            }
+                            launchSingleTop  = true
+                        }
                     } else {
                         Toast.makeText(
                             context,
