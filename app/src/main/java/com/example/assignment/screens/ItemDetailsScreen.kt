@@ -31,9 +31,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarHalf
 import androidx.compose.material.icons.rounded.StarOutline
@@ -117,6 +115,8 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
     val file = context.createImageFile()
     val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
+
+
     val viewModel: ListViewModel = viewModel()
 
     val selectedItem by viewModel.getItemById(id).observeAsState()
@@ -144,9 +144,9 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
                 if (it && !capturedImageUris.contains(uri)) {
                     capturedImageUris = capturedImageUris + listOf(uri)
+
                 }
         }
-
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -424,7 +424,7 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp),
+                    .padding(5.dp),
                 shape = RoundedCornerShape(24),
                 colors = ButtonDefaults.buttonColors(Color(0XFFC8D1F7))
             ) {
