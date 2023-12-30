@@ -5,8 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,9 +31,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarHalf
 import androidx.compose.material.icons.rounded.StarOutline
@@ -87,7 +83,6 @@ import com.example.assignment.data.ListViewModel
 import com.example.assignment.navigations.ItemList
 import com.example.assignment.navigations.TopBar
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -145,13 +140,13 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         }
     }
 
-    val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-                if (it && !capturedImageUris.contains(uri)) {
-                    capturedImageUris = capturedImageUris + listOf(uri)
-
-                }
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+        if (it) {
+            val newUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", context.createImageFile())
+            capturedImageUris = capturedImageUris + listOf(newUri)
         }
+    }
+
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
