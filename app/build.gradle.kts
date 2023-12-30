@@ -53,10 +53,10 @@ android {
 dependencies {
 
     //Gson
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.10")
 
     //coil and glide
-    implementation("io.coil-kt:coil-compose:1.3.2")
+    implementation("io.coil-kt:coil-compose:2.5.0")
     implementation("com.github.bumptech.glide:compose:1.0.0-alpha.1")
 
     //Navigation and Material-Design
@@ -69,6 +69,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:2.6.1")
 
     implementation("androidx.core:core-ktx:1.12.0")
