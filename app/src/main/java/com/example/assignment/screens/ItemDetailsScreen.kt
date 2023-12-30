@@ -112,8 +112,8 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
 
-    val file = context.createImageFile()
-    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+//    val file = context.createImageFile()
+//    val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
 
 
 
@@ -140,8 +140,12 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         }
     }
 
-    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()){
-        capturedImageUris = capturedImageUris + listOf(uri)
+    var currentUri : Uri? = null
+
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { result ->
+        if (result) {
+            capturedImageUris = capturedImageUris + listOf(currentUri!!)
+        }
     }
 
 
@@ -149,8 +153,14 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         ActivityResultContracts.RequestPermission()
     ) {
         if (it) {
+            val newImageFile = context.createImageFile()
+            currentUri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.provider",
+                newImageFile
+            )
             Toast.makeText(context, "Permission Granted", Toast.LENGTH_SHORT).show()
-            cameraLauncher.launch(uri)
+            cameraLauncher.launch(currentUri)
         } else {
             Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
         }
@@ -181,7 +191,13 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                         val permissionCheckResult =
                             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                         if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                            cameraLauncher.launch(uri)
+                            val newImageFile = context.createImageFile()
+                            currentUri = FileProvider.getUriForFile(
+                                context,
+                                "${context.packageName}.provider",
+                                newImageFile
+                            )
+                            cameraLauncher.launch(currentUri)
                         } else {
                             // Request a permission
                             permissionLauncher.launch(Manifest.permission.CAMERA)
