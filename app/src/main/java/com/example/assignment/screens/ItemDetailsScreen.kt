@@ -140,11 +140,8 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
         }
     }
 
-    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-        if (it) {
-            val newUri = FileProvider.getUriForFile(context, "${context.packageName}.provider", context.createImageFile())
-            capturedImageUris = capturedImageUris + listOf(newUri)
-        }
+    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()){
+        capturedImageUris = capturedImageUris + listOf(uri)
     }
 
 
