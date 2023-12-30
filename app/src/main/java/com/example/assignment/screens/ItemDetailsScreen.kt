@@ -142,10 +142,10 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
 
     val cameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-                if (it && !capturedImageUris.contains(uri)) {
-                    capturedImageUris = capturedImageUris + listOf(uri)
+            if (it && !capturedImageUris.contains(uri)) {
+                capturedImageUris = capturedImageUris + listOf(uri)
 
-                }
+            }
         }
 
     val permissionLauncher = rememberLauncherForActivityResult(
