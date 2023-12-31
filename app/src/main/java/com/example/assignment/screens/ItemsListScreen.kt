@@ -155,7 +155,7 @@ fun MenuDish(item: ListEntity, navController: NavHostController, viewModel: List
                     fontSize = 18.sp,
                     fontWeight = FontWeight.W800,
                     modifier = Modifier
-                        .padding(5.dp)
+                        .padding(5.dp, end = 10.dp)
                         .weight(1f)
                 )
                 Icon(

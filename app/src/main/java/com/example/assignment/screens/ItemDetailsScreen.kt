@@ -275,7 +275,11 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
             OutlinedTextField(
                 singleLine = true,
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = {
+                    if (it.text.length <= 15) {
+                        name = it
+                    }
+                },
                 placeholder = { Text(text = "Name") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -368,7 +372,11 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
             )
             OutlinedTextField(
                 value = remarks,
-                onValueChange = { newText -> remarks = newText },
+                onValueChange = {
+                    if (it.text.length <= 91) {
+                        remarks = it
+                    }
+                },
                 placeholder = { Text(text = "Remarks") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -389,7 +397,7 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                 textStyle = TextStyle(
                     fontWeight = FontWeight.W500,
                     fontSize = 18.sp
-                )
+                ),
             )
         }
         Spacer(modifier = Modifier.weight(1f))
