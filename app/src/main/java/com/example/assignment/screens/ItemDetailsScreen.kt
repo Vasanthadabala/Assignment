@@ -373,7 +373,7 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
             OutlinedTextField(
                 value = remarks,
                 onValueChange = {
-                    if (it.text.length <= 91) {
+                    if (it.text.length <= 150) {
                         remarks = it
                     }
                 },
@@ -381,7 +381,7 @@ fun ItemDetailsScreenComponent(navController: NavHostController,id:Int) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-                    .height(120.dp),
+                    .height(150.dp),
                 shape = RoundedCornerShape(12),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(

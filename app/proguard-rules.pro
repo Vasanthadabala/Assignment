@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#-keep class com.example.assignment.data.* { *; }
+#-keep class com.example.assignment.screens.* {*;}
+#-keep class com.example.assignment.navigations.* {*;}
+#-keep class com.example.assignment.MainActivity

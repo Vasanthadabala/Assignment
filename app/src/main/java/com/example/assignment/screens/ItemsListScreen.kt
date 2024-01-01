@@ -151,7 +151,8 @@ fun MenuDish(item: ListEntity, navController: NavHostController, viewModel: List
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Remarks: ${item.remarks}",
+                    text = "Remarks: " +
+                            "${item.remarks.take(20)}${if (item.remarks.length>20) "..." else ""}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.W800,
                     modifier = Modifier
